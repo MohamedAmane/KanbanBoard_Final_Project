@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.scss']
 })
 export class LoginComponent {
-  // Puisque nous sommes en mode "In-Memory", plus besoin de basculer entre login/register
   authData = {
     username: '',
     password: ''
@@ -23,7 +22,6 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.authData).subscribe({
       next: () => {
-        // Redirection vers l'espace de travail global au lieu du projet 1
         this.router.navigate(['/boards']);
       },
       error: (err: any) => {

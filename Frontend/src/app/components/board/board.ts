@@ -1,156 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-// import { KanbanService } from '../../services/kanban';
-// import { Board } from '../../models/kanban.model';
-// import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-// import { ActivatedRoute, Router } from '@angular/router'; // N'oublie pas ces imports !
-//
-// @Component({
-//   selector: 'app-board',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule, DragDropModule],
-//   templateUrl: './board.html',
-//   styleUrls: ['./board.scss']
-// })
-// export class BoardComponent implements OnInit {
-//   board: Board | null = null;
-//   allBoards: Board[] = []; // Liste pour la Navbar
-//   isAddingColumn = false; // Pour basculer entre le "+" et l'input dans la carte
-//   newColumnName = '';
-//
-//   constructor(
-//     private kanbanService: KanbanService,
-//     private route: ActivatedRoute,
-//     private router: Router,
-//   ) {}
-//
-//   ngOnInit(): void {
-//     this.loadAllBoards();
-//     // On écoute les changements de paramètres dans l'URL
-//     this.route.params.subscribe(params => {
-//       const id = +params['id']; // Le '+' transforme la chaîne "1" en nombre 1
-//       if (id) {
-//         this.loadBoard(id); // Appel de la méthode avec l'ID récupéré
-//       }
-//     });
-//   }
-//
-//   loadAllBoards() {
-//     this.kanbanService.getAllBoards().subscribe(data => this.allBoards = data);
-//   }
-//
-//   goToBoard(id: number) {
-//     this.router.navigate(['/board', id]);
-//   }
-//   loadBoard(id: number): void {
-//     this.kanbanService.getBoard(id).subscribe({
-//       next: (data) => {
-//         this.board = data;
-//         console.log('Board chargé :', data);
-//       },
-//       error: (err) => {
-//         console.error('Erreur :', err);
-//         this.router.navigate(['/boards']); // Redirection si l'ID n'existe pas
-//       }
-//     });
-//   }
-//   // À l'intérieur de ta classe BoardComponent
-//   newColumnName: string = '';
-//   newTaskTitre: string = '';
-//   newTaskDescription: string = '';
-//   selectedColumnId: number | undefined = undefined; // Pour savoir dans quelle colonne on ajoute la tâche
-//
-// // Méthode pour ajouter une colonne
-//   addColumn(): void {
-//     if (!this.newColumnName.trim()) return;
-//
-//     const newCol = { nom: this.newColumnName };
-//     // Ton backend attend l'ID du board (1 par défaut ici)
-//     this.kanbanService.createColumn(this.board!.id!, newCol).subscribe({
-//       next: () => {
-//         this.newColumnName = '';
-//         this.isAddingColumn = false;
-//         this.loadBoard(this.board!.id!); // AJOUTE l'ID ici
-//       }
-//     });
-//   }
-//
-//   openAddBoardPrompt() {
-//     const name = prompt("Nom du nouveau tableau :");
-//     if (name) {
-//       this.kanbanService.createBoard({ nom: name }).subscribe(() => this.loadAllBoards());
-//     }
-//   }
-//
-// // Méthode pour ajouter une tâche
-//   addTask(columnId: number): void {
-//     this.loadBoard(this.board!.id!); // AJOUTE l'ID ici
-//     if (!this.newTaskTitre.trim()) return;
-//
-//     const newTask = {
-//       titre: this.newTaskTitre,
-//       description: this.newTaskDescription
-//     };
-//
-//     this.kanbanService.createTask(columnId, newTask).subscribe({
-//       next: () => {
-//         this.newTaskTitre = '';
-//         this.newTaskDescription = '';
-//         this.selectedColumnId = undefined;
-//         if (this.board && this.board.id) {
-//           this.loadBoard(this.board.id); // ✅ On repasse l'ID du board actuel
-//         }
-//       }
-//     });
-//   }
-//   // On utilise 'any' pour le premier paramètre afin de rendre le type compatible avec le template
-//   drop(event: CdkDragDrop<any>, newColumnId: number) {
-//     if (event.previousContainer === event.container) {
-//       // Déplacement dans la même colonne
-//       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-//     } else {
-//       // Déplacement vers une autre colonne
-//       const task = event.previousContainer.data[event.previousIndex];
-//
-//       if (task && task.id) {
-//         this.kanbanService.moveTask(task.id, newColumnId).subscribe({
-//           next: () => {
-//             transferArrayItem(
-//               event.previousContainer.data,
-//               event.container.data,
-//               event.previousIndex,
-//               event.currentIndex
-//             );
-//           },
-//           error: (err) => console.error("Erreur de déplacement :", err)
-//         });
-//       }
-//     }
-//   }
-//   // Variables à ajouter
-//   newBoardName: string = '';
-//   searchQuery: string = '';
-//
-//   createNewBoard(): void {
-//     if (!this.newBoardName.trim()) return;
-//     this.kanbanService.createBoard({ nom: this.newBoardName }).subscribe(newBoard => {
-//       this.newBoardName = '';
-//       // Ici, on pourrait charger le nouveau board
-//       alert("Nouveau tableau créé ! ID: " + newBoard.id);
-//     });
-//   }
-//
-//   onSearch(): void {
-//     if (this.searchQuery.length > 2) {
-//       this.kanbanService.searchTasks(this.searchQuery, 0, 10).subscribe(page => {
-//         console.log("Résultats de recherche :", page.content);
-//         // Optionnel : Surligner ou filtrer visuellement
-//       });
-//     }
-//   }
-// }
-
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -183,17 +30,15 @@ export class BoardComponent implements OnInit {
   tempTaskTitle: string = '';
   tempTaskDesc: string = '';
 
-  // Liste de tous les tableaux pour la barre de navigation
   allBoards: Board[] = [];
 
-  // Variables pour la gestion des colonnes
+
   isAddingColumn = false;
   newColumnName: string = '';
 
   editingColumnId: number | null = null;
   tempColumnName: string = '';
 
-  // Variables pour la gestion des tâches
   newTaskTitre: string = '';
   newTaskDescription: string = '';
   selectedColumnId: number | undefined = undefined;
@@ -209,10 +54,7 @@ export class BoardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. Charger la liste de tous les tableaux pour la Navbar
     this.loadAllBoards();
-
-    // 2. Écouter les changements d'ID dans l'URL (ex: /board/1)
     this.route.params.subscribe(params => {
       const id = +params['id'];
       if (id) {
@@ -231,32 +73,26 @@ export class BoardComponent implements OnInit {
       next: (savedBoard) => {
         this.newBoardName = '';
         this.isAddingBoard = false;
-        this.loadAllBoards(); // Rafraîchir la liste des onglets
-        this.goToBoard(savedBoard.id!); // Naviguer vers le nouveau board
+        this.loadAllBoards();
+        this.goToBoard(savedBoard.id!);
       },
       error: (err) => console.error("Erreur création board", err)
     });
   }
 
-  // Charge la liste complète des boards depuis le backend (port 8088)
   loadAllBoards(): void {
-    // On spécifie que le service renvoie une PageResponse
     this.kanbanService.getAllBoards(0, 10).subscribe({
-      // On récupère 'response' au lieu de 'data'
       next: (response) => {
-        // On affecte uniquement la partie 'content' qui est le tableau Board[]
         this.allBoards = response.content;
       },
       error: (err) => console.error('Erreur chargement boards', err)
     });
   }
 
-  // Navigation vers un autre tableau depuis la Navbar
   goToBoard(id: number): void {
     this.router.navigate(['/board', id]);
   }
 
-  // Création d'une nouvelle colonne (Ghost Card)
   addColumn(): void {
     if (!this.newColumnName.trim() || !this.board?.id) return;
 
@@ -265,12 +101,11 @@ export class BoardComponent implements OnInit {
       next: () => {
         this.newColumnName = '';
         this.isAddingColumn = false;
-        this.loadBoard(this.board!.id!); // Rafraîchir avec le bon ID
+        this.loadBoard(this.board!.id!);
       }
     });
   }
 
-  // Création d'une tâche dans une colonne spécifique
   addTask(columnId: number): void {
     if (!this.newTaskTitre.trim()) return;
 
@@ -284,18 +119,15 @@ export class BoardComponent implements OnInit {
         this.newTaskTitre = '';
         this.newTaskDescription = '';
         this.selectedColumnId = undefined;
-        this.loadBoard(this.board!.id!); // Rafraîchir
+        this.loadBoard(this.board!.id!);
       }
     });
   }
 
-  // Logique de Drag-and-Drop avec persistance en base de données
   drop(event: CdkDragDrop<any>, newColumnId: number) {
     if (event.previousContainer === event.container) {
-      // Déplacement interne
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      // Déplacement entre colonnes
       const task = event.previousContainer.data[event.previousIndex];
 
       if (task && task.id) {
@@ -314,7 +146,6 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  // Fonction rapide pour ajouter un board depuis la barre du haut
   openAddBoardPrompt(): void {
     const name = prompt("Nom du nouveau tableau :");
     if (name) {
@@ -388,7 +219,7 @@ export class BoardComponent implements OnInit {
       next: () => {
         this.isEditingBoardName = false;
         this.loadBoard(this.board!.id!);
-        this.loadAllBoards(); // Pour mettre à jour la liste dans la Navbar
+        this.loadAllBoards();
       }
     });
   }
@@ -397,23 +228,18 @@ export class BoardComponent implements OnInit {
     if (confirm(`🚨 Attention : Vous allez supprimer le tableau "${this.board!.nom}" et TOUT son contenu. Continuer ?`)) {
       this.kanbanService.deleteBoard(this.board!.id!).subscribe({
         next: () => {
-          this.router.navigate(['/boards']); // Redirection vers le dashboard
+          this.router.navigate(['/boards']);
         }
       });
     }
   }
 
-  // 1. Initialise les propriétés de pagination quand le board est chargé
   loadBoard(id: number): void {
     this.kanbanService.getBoard(id).subscribe({
       next: (data) => {
         this.board = data;
         this.board.colonnes?.forEach(col => {
-          // Ne pas écraser si le backend envoie déjà la valeur
           col.currentPage = col.currentPage ?? 0;
-
-          // Si le backend n'envoie pas totalPages, on met 2 pour forcer l'affichage du bouton
-          // (à condition que la liste de tâches soit déjà "pleine", ex: 5 tâches)
           if (!col.totalPages) {
             col.totalPages = (col.taches && col.taches.length >= 5) ? 2 : 1;
           }
@@ -424,7 +250,6 @@ export class BoardComponent implements OnInit {
     });
   }
 
-// 2. La méthode appelée par le bouton "Charger plus"
   loadMoreTasks(col: Column): void {
     if (!col.id || col.isLoading) return;
 
@@ -433,11 +258,9 @@ export class BoardComponent implements OnInit {
 
     this.kanbanService.getTasksByColumn(col.id, nextPage, 5).subscribe({
       next: (response) => {
-        // On ajoute les nouvelles tâches à la liste existante
         if (col.taches && response.content) {
           col.taches = [...col.taches, ...response.content];
         }
-        // On met à jour les compteurs
         col.currentPage = response.number;
         col.totalPages = response.totalPages;
         col.isLoading = false;
@@ -451,19 +274,16 @@ export class BoardComponent implements OnInit {
     '#8b5cf6', '#ec4899', '#06b6d4', '#f97316', '#14b8a6'
   ];
 
-  // Fonction pour obtenir une couleur aléatoire
   getRandomColor(): string {
     return this.palette[Math.floor(Math.random() * this.palette.length)];
   }
 
   isUserMenuOpen = false;
 
-// Récupération du nom d'utilisateur
   get username(): string {
     return localStorage.getItem('currentUser') || 'Utilisateur';
   }
 
-// Calcul des initiales (ex: "Mohamed Amane" -> "MA", "admin" -> "A")
   get userInitials(): string {
     const name = this.username;
     return name
@@ -485,7 +305,6 @@ export class BoardComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     const target = event.target as HTMLElement;
-    // Si le clic n'est pas sur l'avatar ou le menu, on ferme
     if (!target.closest('.user-menu-container')) {
       this.isUserMenuOpen = false;
     }

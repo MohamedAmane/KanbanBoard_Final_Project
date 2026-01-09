@@ -41,7 +41,7 @@ public class KanbanServiceImpl implements IKanbanService {
 
     @Override
     public Board createBoard(Board board, String username) {
-        board.setUsername(username); // On lie le board à l'utilisateur avant de sauvegarder
+        board.setUsername(username);
         return boardRepository.save(board);
     }
 
@@ -57,7 +57,6 @@ public class KanbanServiceImpl implements IKanbanService {
     }
     @Override
     public Page<Board> getAllBoards(Pageable pageable) {
-        // Spring Data JPA gère automatiquement la pagination si tu lui passes pageable
         return boardRepository.findAll(pageable);
     }
 

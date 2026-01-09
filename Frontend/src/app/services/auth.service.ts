@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router'; // <--- 1. Ajoutez cet import
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -9,7 +9,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router // <--- 2. Injectez le router ici
+    private router: Router
   ) {}
 
   login(credentials: { username: string, password: string }): Observable<any> {
@@ -28,7 +28,7 @@ export class AuthService {
 
   // 3. Méthode logout améliorée
   logout() {
-    localStorage.clear(); // Nettoie le cache (évite le problème de navigateur précédent)
-    this.router.navigate(['/login']); // Redirige vers la page de connexion
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

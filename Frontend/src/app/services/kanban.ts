@@ -15,12 +15,10 @@ export interface PageResponse<T> {
   providedIn: 'root'
 })
 export class KanbanService {
-  // Ton port backend défini dans application.properties est 8088
   private apiUrl = 'http://localhost:8088/api';
 
   constructor(private http: HttpClient) { }
 
-  // Récupérer le tableau complet
   getBoard(id: number): Observable<Board> {
     return this.http.get<Board>(`${this.apiUrl}/boards/${id}`);
   }

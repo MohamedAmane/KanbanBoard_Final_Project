@@ -24,8 +24,6 @@ export class DashboardComponent implements OnInit {
     this.loadBoards();
   }
 
-
-
   goToBoard(id: number) {
     this.router.navigate(['/board', id]); // Navigation vers le détail
   }
@@ -43,19 +41,17 @@ export class DashboardComponent implements OnInit {
       next: () => {
         this.newBoardName = '';
         this.isAddingBoard = false;
-        this.loadBoards(); // Recharge la liste incluant le nouveau board
+        this.loadBoards();
       },
       error: (err) => console.error("Erreur lors de la création du board", err)
     });
   }
 
-  // Active l'édition d'une carte spécifique
   startEditing(board: Board) {
     this.editingBoardId = board.id!;
     this.tempBoardName = board.nom;
   }
 
-// Enregistre la modification (PUT /api/boards/{id})
   saveUpdate(id: number) {
     if (!this.tempBoardName.trim()) return;
     this.kanbanService.updateBoard(id, { nom: this.tempBoardName }).subscribe({
@@ -66,7 +62,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-// Supprime le board (DELETE /api/boards/{id})
   deleteBoard(id: number) {
     if (confirm("🚨 Voulez-vous vraiment supprimer ce tableau et tout son contenu ?")) {
       this.kanbanService.deleteBoard(id).subscribe({
@@ -81,7 +76,7 @@ export class DashboardComponent implements OnInit {
 
   loadBoards() {
     this.kanbanService.getAllBoards(this.currentPage, this.pageSize).subscribe(page => {
-      this.boards = page.content; // On récupère uniquement les boards de la page actuelle
+      this.boards = page.content;
       this.totalPages = page.totalPages;
     });
   }

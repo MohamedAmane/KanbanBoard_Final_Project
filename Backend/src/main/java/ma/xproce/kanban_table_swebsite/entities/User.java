@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") // "user" est souvent un mot réservé en SQL
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +23,5 @@ public class User {
     @jakarta.persistence.Column(nullable = false)
     private String password;
 
-    private String role; // Exemple: "ROLE_USER"
+    private String role;
 }

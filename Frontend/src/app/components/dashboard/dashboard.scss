@@ -12,15 +12,14 @@
 
 .boards-container {
   max-width: 1200px;
-  margin: 0 auto; // Centre tout le bloc sur la page
+  margin: 0 auto;
 }
 
 .boards-grid {
   display: grid;
-  // Aligne les cartes en colonnes de 300px et les centre
   grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
   gap: 30px;
-  justify-content: center; // CENTRE LES CARTES DANS LA GRILLE
+  justify-content: center;
 }
 
 .board-card {
@@ -28,7 +27,7 @@
   background: white;
   padding: 25px;
   border-radius: 16px;
-  border-top: 6px solid #4f46e5; // La bordure colorée en haut
+  border-top: 6px solid #4f46e5;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -51,8 +50,7 @@
   }
 }
 
-/* CARTE FANTÔME */
-/* CARTE FANTÔME */
+
 .add-board-ghost-card {
   background: rgba(0, 0, 0, 0.02);
   border: 2px dashed #cbd5e1;
@@ -62,7 +60,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  padding: 20px; // Ajout d'un padding pour que l'input ne colle pas aux bords
+  padding: 20px;
 
   &:hover:not(.is-editing) {
     background: rgba(79, 70, 229, 0.05);
@@ -86,7 +84,7 @@
     width: 100%;
     input {
       width: 100%;
-      box-sizing: border-box; // <--- LA CORRECTION EST ICI
+      box-sizing: border-box;
       padding: 12px;
       border: 2px solid #e2e8f0;
       border-radius: 8px;
@@ -122,5 +120,3 @@
     }
   }
 }
-
-// Supprimez tout ce qui se trouve après cette ligne pour éviter les erreurs d'accolades
