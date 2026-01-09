@@ -15,20 +15,18 @@ public class UserSecurityConfig {
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails admin = User.withUsername("admin")
                 .password("12345")
-                .authorities("ROLE_USER") // On donne le rôle attendu
+                .authorities("ROLE_USER")
                 .build();
 
         UserDetails user = User.withUsername("user")
                 .password("12345")
                 .authorities("ROLE_USER")
                 .build();
-
         return new InMemoryUserDetailsManager(admin, user);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Retour au mode sans encodage pour utiliser "12345" directement
         return NoOpPasswordEncoder.getInstance();
     }
 }
