@@ -1,0 +1,256 @@
+<!--<div class="kanban-app" *ngIf="board">-->
+<!--  <nav class="navbar">-->
+<!--    <div class="nav-left">-->
+<!--      <div class="logo-box">K</div>-->
+<!--      <h1 class="board-title">{{ board.nom }}</h1>-->
+<!--    </div>-->
+
+<!--    <div class="nav-center">-->
+<!--      <div class="search-wrapper">-->
+<!--        <input type="text" placeholder="Rechercher une tâche..." [(ngModel)]="searchQuery" (input)="onSearch()">-->
+<!--        <span class="search-icon">🔍</span>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="nav-right">-->
+<!--      <div class="add-board-box">-->
+<!--        <input [(ngModel)]="newBoardName" placeholder="Nom du nouveau Board...">-->
+<!--        <button (click)="createNewBoard()" class="btn-create-board">Créer Board</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </nav>-->
+
+<!--  <div class="toolbar">-->
+<!--    <div class="add-column-section">-->
+<!--      <input [(ngModel)]="newColumnName" placeholder="Titre de la colonne...">-->
+<!--      <button (click)="addColumn()" class="btn-add-col">+ Ajouter une colonne</button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <main class="board-content" cdkDropListGroup>-->
+<!--    <div class="columns-scroll-wrapper">-->
+
+<!--      <div class="column-wrapper" *ngFor="let col of board.colonnes; let i = index">-->
+<!--        <div class="kanban-column" [class]="'color-' + (i % 4)">-->
+<!--          <div class="column-header">-->
+<!--            <h3 class="column-name">{{ col.nom }}</h3>-->
+<!--            <span class="task-count">{{ col.taches?.length || 0 }}</span>-->
+<!--          </div>-->
+
+<!--          <div class="task-list"-->
+<!--               cdkDropList-->
+<!--               [cdkDropListData]="col.taches || []"-->
+<!--               (cdkDropListDropped)="drop($event, col.id!)">-->
+
+<!--            <div class="task-card" *ngFor="let task of col.taches" cdkDrag>-->
+<!--              <div class="card-body">-->
+<!--                <h4>{{ task.titre }}</h4>-->
+<!--                <p>{{ task.description }}</p>-->
+<!--              </div>-->
+
+<!--              <div class="card-tags" *ngIf="task.tags?.length">-->
+<!--                <span class="tag-pill"-->
+<!--                      *ngFor="let tag of task.tags"-->
+<!--                      [style.background]="tag.couleur"-->
+<!--                      [style.box-shadow]="'0 2px 4px ' + tag.couleur + '66'">-->
+<!--                  {{ tag.nom }}-->
+<!--                </span>-->
+<!--              </div>-->
+
+<!--              <div class="task-placeholder" *cdkDragPlaceholder></div>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="column-footer">-->
+<!--            <button class="btn-open-editor" *ngIf="selectedColumnId !== col.id" (click)="selectedColumnId = col.id">-->
+<!--              + Ajouter une carte-->
+<!--            </button>-->
+
+<!--            <div class="task-editor" *ngIf="selectedColumnId === col.id">-->
+<!--              <input [(ngModel)]="newTaskTitre" placeholder="Titre...">-->
+<!--              <textarea [(ngModel)]="newTaskDescription" placeholder="Description..."></textarea>-->
+<!--              <div class="editor-actions">-->
+<!--                <button (click)="addTask(col.id!)" class="btn-save">Enregistrer</button>-->
+<!--                <button (click)="selectedColumnId = undefined" class="btn-cancel">Annuler</button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </main>-->
+<!--</div>-->
+
+
+<div class="kanban-app" *ngIf="board">
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="logo-badge" routerLink="/boards" style="cursor: pointer;">K</div>
+
+        <div class="board-title-container" *ngIf="!isEditingBoardName">
+          <h1 class="current-board-name" (click)="startEditingBoardName()">{{ board.nom }}</h1>
+          <button class="btn-delete-board" (click)="confirmDeleteBoard()" title="Supprimer ce tableau">🗑️</button>
+        </div>
+
+        <div class="board-title-edit" *ngIf="isEditingBoardName">
+          <input [(ngModel)]="tempBoardName"
+                 (keyup.enter)="saveBoardName()"
+                 (blur)="saveBoardName()"
+                 class="nav-board-input"
+                 autoFocus>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <div class="boards-pill-group">
+          <button *ngFor="let b of allBoards"
+                  [class.active]="b.id === board.id"
+                  (click)="goToBoard(b.id!)"
+                  class="board-pill">
+            {{ b.nom }}
+          </button>
+
+          <div class="inline-add-board" [class.is-editing]="isAddingBoard">
+            <button class="btn-plus" *ngIf="!isAddingBoard" (click)="isAddingBoard = true">+</button>
+
+            <div class="input-wrapper" *ngIf="isAddingBoard">
+              <input [(ngModel)]="newBoardName"
+                     placeholder="Nom du tableau..."
+                     autoFocus
+                     (keyup.enter)="saveNewBoard()"
+                     (keyup.escape)="isAddingBoard = false">
+              <button class="btn-confirm" (click)="saveNewBoard()">✓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-menu-container">
+          <div class="user-avatar" (click)="toggleUserMenu()">
+            {{ userInitials }}
+          </div>
+
+          <div class="user-dropdown" *ngIf="isUserMenuOpen">
+            <div class="dropdown-header">
+              <span class="user-name">{{ username }}</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout" (click)="onLogout()">
+              <span class="icon">🚪</span> Déconnexion
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="board-main">
+    <div class="columns-viewport" cdkDropListGroup>
+
+      <div class="column-container" *ngFor="let col of board.colonnes; let i = index">
+        <div class="column-card" [class]="'color-' + (i % 4)">
+
+          <div class="column-header">
+
+            <div class="header-view" *ngIf="editingColumnId !== col.id">
+              <h3 (click)="startEditingColumn(col)">{{ col.nom }}</h3>
+              <div class="column-actions">
+                <button class="mini-btn" (click)="confirmDeleteColumn(col.id!)" title="Supprimer la colonne">✕</button>
+              </div>
+            </div>
+
+            <div class="header-edit" *ngIf="editingColumnId === col.id">
+              <input [(ngModel)]="tempColumnName"
+                     (keyup.enter)="saveColumnUpdate(col.id!)"
+                     (blur)="editingColumnId = null"
+                     autoFocus>
+            </div>
+
+            <span class="badge" *ngIf="editingColumnId !== col.id">{{ col.taches?.length || 0 }}</span>
+          </div>
+
+          <div class="task-list-area" cdkDropList [cdkDropListData]="col.taches || []" (cdkDropListDropped)="drop($event, col.id!)">
+            <div class="task-item" *ngFor="let task of col.taches" cdkDrag>
+
+              <div class="task-view" *ngIf="editingTaskId !== task.id">
+                <div class="task-header">
+                  <h4>{{ task.titre }}</h4>
+
+                  <div class="task-actions">
+                    <button class="action-btn edit" (click)="startEditingTask(task)" title="Modifier">✏️</button>
+                    <button class="action-btn delete" (click)="confirmDeleteTask(task.id!)" title="Supprimer">🗑️</button>
+                  </div>
+                </div>
+                <p *ngIf="task.description">{{ task.description }}</p>
+              </div>
+
+              <div class="task-edit-mode" *ngIf="editingTaskId === task.id">
+                <input [(ngModel)]="tempTaskTitle" class="edit-input" autofocus>
+
+                <textarea [(ngModel)]="tempTaskDesc" class="edit-textarea" placeholder="Description..."></textarea>
+
+                <div class="edit-buttons">
+                  <button class="btn-save-task" (click)="saveTaskUpdate(task.id!)">Enregistrer</button>
+                  <button class="btn-cancel-task" (click)="editingTaskId = null">Annuler</button>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+          <div class="pagination-trigger-area" *ngIf="col.totalPages && col.currentPage !== undefined && col.currentPage < col.totalPages - 1">
+            <button class="btn-load-more" (click)="loadMoreTasks(col)" [disabled]="col.isLoading">
+              <span class="spinner" *ngIf="col.isLoading"></span>
+              {{ col.isLoading ? 'Chargement...' : 'Afficher plus de tâches' }}
+            </button>
+          </div>
+
+          <div class="column-footer">
+            <button class="btn-add-task-trigger"
+                    *ngIf="selectedColumnId !== col.id"
+                    (click)="selectedColumnId = col.id">
+              <span class="plus-icon">+</span> Ajouter une carte
+            </button>
+
+            <div class="task-add-editor" *ngIf="selectedColumnId === col.id">
+              <div class="editor-card">
+                <input [(ngModel)]="newTaskTitre"
+                       class="editor-input"
+                       placeholder="Titre de la tâche..."
+                       autofocus>
+
+                <textarea [(ngModel)]="newTaskDescription"
+                          class="editor-textarea"
+                          placeholder="Ajouter une description détaillée..."></textarea>
+              </div>
+
+              <div class="editor-actions">
+                <button class="btn-confirm-add" (click)="addTask(col.id!)">Ajouter la carte</button>
+                <button class="btn-cancel-add" (click)="selectedColumnId = undefined">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column-container">
+        <div class="add-list-card" [class.is-editing]="isAddingColumn">
+          <div class="trigger" *ngIf="!isAddingColumn" (click)="isAddingColumn = true">
+            <span class="icon">+</span>
+            <span class="text">Ajouter une liste</span>
+          </div>
+          <div class="form-container" *ngIf="isAddingColumn">
+            <input [(ngModel)]="newColumnName" placeholder="Titre de la liste..." (keyup.enter)="addColumn()">
+            <div class="form-actions">
+              <button (click)="addColumn()" class="btn-action-primary">Ajouter</button>
+              <button (click)="isAddingColumn = false" class="btn-action-ghost">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

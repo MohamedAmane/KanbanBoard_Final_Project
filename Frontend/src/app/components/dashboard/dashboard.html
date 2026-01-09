@@ -1,0 +1,58 @@
+<div class="dashboard-wrapper">
+  <header class="dash-header">
+    <h1>Mes Espaces de Travail</h1>
+  </header>
+
+  <main class="boards-container">
+    <div class="boards-grid">
+
+      <div class="board-card" *ngFor="let b of boards; let i = index"
+           [style.border-top-color]="['#4f46e5', '#0891b2', '#059669', '#d97706'][i % 4]">
+
+        <div class="card-actions">
+          <button class="action-btn" (click)="startEditing(b); $event.stopPropagation()">✏️</button>
+          <button class="action-btn delete" (click)="deleteBoard(b.id!); $event.stopPropagation()">🗑️</button>
+        </div>
+
+        <div class="card-content" (click)="goToBoard(b.id!)">
+          <div class="card-icon">📋</div>
+
+          <h3 *ngIf="editingBoardId !== b.id">{{ b.nom }}</h3>
+
+          <div *ngIf="editingBoardId === b.id" class="edit-input-box" (click)="$event.stopPropagation()">
+            <input [(ngModel)]="tempBoardName" (keyup.enter)="saveUpdate(b.id!)" autofocus>
+            <button (click)="saveUpdate(b.id!)" class="btn-ok">OK</button>
+          </div>
+
+          <p class="stats">{{ b.colonnes?.length || 0 }} Colonnes</p>
+          <div class="card-footer">Ouvrir le tableau →</div>
+        </div>
+      </div>
+
+      <div class="add-board-ghost-card" [class.is-editing]="isAddingBoard">
+        <div class="plus-state" *ngIf="!isAddingBoard" (click)="isAddingBoard = true">
+          <span class="big-plus">+</span>
+          <span class="label">Nouveau Tableau</span>
+        </div>
+
+        <div class="input-state" *ngIf="isAddingBoard">
+          <input [(ngModel)]="newBoardName"
+                 placeholder="Nom du tableau..."
+                 (keyup.enter)="createBoard()"
+                 (keyup.escape)="isAddingBoard = false"
+                 autofocus>
+          <div class="actions">
+            <button (click)="createBoard()" class="btn-confirm">Créer</button>
+            <button (click)="isAddingBoard = false" class="btn-close">✕</button>
+          </div>
+        </div>
+      </div>
+      <div class="pagination-controls" *ngIf="totalPages > 1">
+        <button (click)="changePage(-1)" [disabled]="currentPage === 0">Précédent</button>
+        <span>Page {{ currentPage + 1 }} sur {{ totalPages }}</span>
+        <button (click)="changePage(1)" [disabled]="currentPage === totalPages - 1">Suivant</button>
+      </div>
+
+    </div>
+  </main>
+</div>

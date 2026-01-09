@@ -1,0 +1,18 @@
+# Java / Maven
+**/target/
+**/.mvn/
+**/.metadata/
+
+# Angular / Node
+**/node_modules/
+**/.angular/
+**/dist/
+
+# IDE (IntelliJ, VS Code)
+**/.idea/
+**/.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

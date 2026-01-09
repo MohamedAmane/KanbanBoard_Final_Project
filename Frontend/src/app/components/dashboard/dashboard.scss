@@ -1,0 +1,126 @@
+.dashboard-wrapper {
+  padding: 60px 20px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+
+  .dash-header {
+    text-align: center;
+    margin-bottom: 50px;
+    h1 { color: #1e293b; font-size: 2.5rem; font-weight: 800; }
+  }
+}
+
+.boards-container {
+  max-width: 1200px;
+  margin: 0 auto; // Centre tout le bloc sur la page
+}
+
+.boards-grid {
+  display: grid;
+  // Aligne les cartes en colonnes de 300px et les centre
+  grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
+  gap: 30px;
+  justify-content: center; // CENTRE LES CARTES DANS LA GRILLE
+}
+
+.board-card {
+  position: relative;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  border-top: 6px solid #4f46e5; // La bordure colorée en haut
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    .card-actions { opacity: 1; }
+  }
+
+  .card-icon { font-size: 2rem; margin-bottom: 15px; }
+  h3 { color: #1e293b; margin: 0 0 10px 0; font-size: 1.25rem; font-weight: 700; }
+  .stats { color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
+  .card-footer { color: #4f46e5; font-weight: 600; font-size: 0.85rem; }
+
+  .card-actions {
+    position: absolute; top: 10px; right: 10px;
+    display: flex; gap: 5px; opacity: 0; transition: opacity 0.2s;
+    .action-btn { background: #f1f5f9; border: none; padding: 5px; border-radius: 6px; cursor: pointer; }
+  }
+}
+
+/* CARTE FANTÔME */
+/* CARTE FANTÔME */
+.add-board-ghost-card {
+  background: rgba(0, 0, 0, 0.02);
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 20px; // Ajout d'un padding pour que l'input ne colle pas aux bords
+
+  &:hover:not(.is-editing) {
+    background: rgba(79, 70, 229, 0.05);
+    border-color: #4f46e5;
+    cursor: pointer;
+  }
+
+  &.is-editing {
+    background: white;
+    border-style: solid;
+    border-color: #4f46e5;
+  }
+
+  .plus-state {
+    display: flex; flex-direction: column; align-items: center; color: #94a3b8;
+    .big-plus { font-size: 3.5rem; font-weight: 200; line-height: 1; }
+    .label { font-weight: 600; margin-top: 10px; }
+  }
+
+  .input-state {
+    width: 100%;
+    input {
+      width: 100%;
+      box-sizing: border-box; // <--- LA CORRECTION EST ICI
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      outline: none;
+      font-family: inherit;
+
+      &:focus { border-color: #4f46e5; }
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      .btn-confirm {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-close {
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+}
+
+// Supprimez tout ce qui se trouve après cette ligne pour éviter les erreurs d'accolades

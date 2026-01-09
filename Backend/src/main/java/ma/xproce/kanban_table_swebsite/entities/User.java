@@ -1,0 +1,27 @@
+package ma.xproce.kanban_table_swebsite.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users") // "user" est souvent un mot réservé en SQL
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+    @jakarta.persistence.Column(unique = true, nullable = false)
+    private String username;
+
+
+    @jakarta.persistence.Column(nullable = false)
+    private String password;
+
+    private String role; // Exemple: "ROLE_USER"
+}
